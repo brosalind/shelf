@@ -42,7 +42,7 @@ mongoose.connect('mongodb+srv://benitajenniefer:CSbd0r5HgFjDSF15@project.gvpxier
 
 io.on("connection", (socket) => {
   console.log("connected", socket.id)
-  socket.on("message", async (text, id, email) => {
+  socket.on("message", async (message, id, email) => {
     try {
 
       const doesDiscussionExist = await Discussion.find({ bookId: id })
@@ -52,21 +52,21 @@ io.on("connection", (socket) => {
       if (doesDiscussionExist.length > 1) {
         const newMessage = await Message.create({
           sender: findUser._id,
-          content: text,
+          content: message.content,
           discussion: doesDiscussionExist[0]._id
         })
       } else {
         const newDiscussion = await Discussion.create({
           bookId: id,
-          users: findUser._id
+          users: [findUser._id]
         })
         const newMessage = await Message.create({
           sender: findUser._id,
-          content: text,
+          content: message.content,
           discussion: newDiscussion._id
         })
       }
-      socket.broadcast.emit("hello", text, findUser.name)
+      socket.broadcast.emit("hello", message, findUser.name)
     } catch (err) {
       console.log(err)
     }
@@ -76,3 +76,4 @@ socket.on('disconnect', () => {
   console.log("disconnected")
 })
 })
+
