@@ -24,8 +24,8 @@ export default {
     },
     created() {
         this.getBookDetails(this.$route.params.id)
-        this.userPostEmail = localStorage.email
-        this.userPostName = localStorage.name
+        // this.userPostEmail = localStorage.email
+        // this.userPostName = localStorage.name
         this.getDiscussionThread(this.$route.params.id)
         if (localStorage.access_token) {
             this.isLoggedIn = true
@@ -33,16 +33,8 @@ export default {
     },
 
     mounted() {
-        socket.on("hello", text => {
-            console.log("hello", text)
-            this.discussionPosts.push({
-                content: text,
-                sender: {
-                    name: this.userPostName,
-                    pic: this.userPostPicture
-                },
-                createdAt: new Date()
-            })
+        socket.on("hello", (message) => {
+            this.discussionPosts.push(message)
             this.userPost = ''
         })
     }
@@ -56,11 +48,13 @@ export default {
 
     <div v-else>
         <div class="container" style="margin-top: 20px;">
-            <h1 class="text-center mb-10" style="color:#33C1C7; font-family: var(--second-font); margin-top: 50px; margin-bottom: 30px;">{{ currentBook.items[0].volumeInfo.title }}</h1>
+            <h1 class="text-center mb-10"
+                style="color:#33C1C7; font-family: var(--second-font); margin-top: 50px; margin-bottom: 30px;">{{
+                    currentBook.items[0].volumeInfo.title }}</h1>
             <div class="row">
                 <div class="col-sm-4">
-                    <img :src="`https://books.google.com/books/publisher/content/images/frontcover/${currentBook.items[0].id}?fife=w400-h600&source=gbs_api`" class="img-fluid img-thumbnail w-100"
-                        alt="book cover">
+                    <img :src="`https://books.google.com/books/publisher/content/images/frontcover/${currentBook.items[0].id}?fife=w400-h600&source=gbs_api`"
+                        class="img-fluid img-thumbnail w-100" alt="book cover">
                 </div>
                 <div class="col-sm-8">
                     <p>Synopsis: {{ currentBook.items[0].volumeInfo.description }}</p>
@@ -80,7 +74,8 @@ export default {
 
 
                 <div v-if="Array.isArray(discussionPosts) && discussionPosts.length > 0">
-                    <h2 style="color: #33C1C7; font-family: var(--second-font); font-size:30px" class="text-center">join the discussion</h2>
+                    <h2 style="color: #33C1C7; font-family: var(--second-font); font-size:30px" class="text-center">join the
+                        discussion</h2>
                     <h1 class="discussion-title">Comments {{ discussionPosts.length }}</h1>
                     <DiscussionThread v-for="post in discussionPosts" :threadPost="post" :key="post.id" />
                 </div>
@@ -92,17 +87,18 @@ export default {
 
                 <div style="margin-top: 50px;">
                     <form class="form-block" @submit.prevent="sendMessage(userPost, this.$route.params.id, userPostEmail)">
-                        <div class="row" >
-                            <div class="col-xs-12 col-sm-6" >
-                                <div class="form-group icon" >
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6">
+                                <div class="form-group icon">
                                     <div class="icon"><img :src="this.userPostPicture"></div>
                                     <input class="form-input" type="text" placeholder="Your name" v-model="userPostName"
-                                        disabled  style="background-color: black;">
+                                        disabled style="background-color: black;">
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <textarea class="form-input" required="" placeholder="Your text" v-model="userPost" style="background-color: black;"></textarea>
+                            <textarea class="form-input" required="" placeholder="Your text" v-model="userPost"
+                                style="background-color: black;"></textarea>
                         </div>
                         <button class="btn btn-outline-info" style="border-color: #33C1C7" type="submit">submit</button>
                     </form>
@@ -171,5 +167,4 @@ span {
     margin-top: -5px;
     height: 40px;
     width: 40px
-}
-</style>
+}</style>

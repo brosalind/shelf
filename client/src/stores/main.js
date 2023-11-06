@@ -307,8 +307,17 @@ export const useMainStore = defineStore('main', {
       }
     },
 
-    async sendMessage(userPost, bookId, userEmail) {
-      socket.emit("message", userPost, bookId, userEmail)
+    async sendMessage(userPost, bookId) {
+      const message = {
+        content: userPost,
+        sender: {
+          name: this.userPostName,
+          pic: this.userPostPicture,
+        },
+        createdAt: new Date(),
+      };
+      socket.emit("message", message, bookId, this.userPostEmail);
+    
     },
 
     async editUserProfile(name, image){
