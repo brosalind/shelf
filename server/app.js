@@ -6,6 +6,7 @@ if (process.env.NODE_ENV !== 'production') {
 const express = require('express')
 const cors = require('cors')
 const app = express()
+const database = process.env.DATABASE_URL
 const port = process.env.PORT || 3000
 const mongoose = require('mongoose');
 const router = require('./routers')
@@ -30,7 +31,7 @@ app.use(express.json())
 app.use(router)
 
 
-mongoose.connect('mongodb+srv://benitajenniefer:CSbd0r5HgFjDSF15@project.gvpxier.mongodb.net/books?retryWrites=true&w=majority').then(() => {
+mongoose.connect(database).then(() => {
   console.log("connected to db")
   server.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
